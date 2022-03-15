@@ -48,6 +48,9 @@ var numero = Math.round(random(1, 100));
 festa = new Group();
 deserto = new Group();
 
+internet.debug = false;
+internet.setCollider("circle", 0, 0, 35);
+
 }
 
 function draw(){
@@ -55,40 +58,35 @@ function draw(){
     //console.log (frameCount);
     //console.log (internet.y);
 
+    internet.collide(homeminvisivel);
+
 if(estado === JOGANDO){
     areia.velocityX = -2;
-
-
-
+    if(areia.x < 0){
+        areia.x = areia.width/2;
+    }
+    if(keyDown("space")&& internet.y > 150){
+        internet.velocityY = -12;
+    }
+    internet.velocityY += 1;
+    cloud();
+    enemy();
+    placar += Math.round(frameCount/60); 
+    if (deserto.isTouching(internet)){
+      estado = MORTE;  
+    }
 } else if (estado === MORTE){
     areia.velocityX = 0;
+    festa.setVelocityXEach (0);
+    deserto.setVelocityXEach (0);
 
 
 
     
 }
 
-
-
-
-
-
-if(areia.x < 0){
-    areia.x = areia.width/2;
-}
-
-if(keyDown("space")&& internet.y > 150){
-    internet.velocityY = -12;
-}
-internet.velocityY += 1;
-internet.collide(homeminvisivel);
-
-cloud();
-enemy();
-
 drawSprites();
 text ("Pontuação:"+ placar, 500, 50);
-placar += Math.round(frameCount/60); 
 }
 
 function cloud(){
