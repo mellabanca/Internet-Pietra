@@ -8,6 +8,9 @@ var deserto;
 var JOGANDO = 1;
 var MORTE = 0;
 var estado = JOGANDO;
+var medo; 
+var tantantan, fim;
+var tantan, recomeco;
 
 function preload(){
 
@@ -21,6 +24,11 @@ obs3 = loadImage ("obstacle3.png");
 obs4 = loadImage ("obstacle4.png");
 obs5 = loadImage ("obstacle5.png");
 obs6 = loadImage ("obstacle6.png");
+
+medo = loadAnimation ("trex_collided.png");
+
+tantantan = loadImage ("gameOver.png");
+tantan = loadImage ("restart.png"); 
 }
 
 function setup(){
@@ -29,6 +37,7 @@ createCanvas(600,200)
 
 internet = createSprite(50, 160, 20, 50);
 internet.addAnimation("correndo", internetmovel);
+internet.addAnimation ("scare", medo);
 internet.scale = 0.5;
 
 areia = createSprite(200,180,400,20)
@@ -37,6 +46,13 @@ areia.x = areia.width/2;
 
 homeminvisivel = createSprite (200, 190, 400, 10);
 homeminvisivel.visible = false;
+
+fim = createSprite (300, 100);
+fim.addImage (tantantan);
+
+recomeco = createSprite (300, 140);
+recomeco.addImage (tantan);
+recomeco.scale = 0.5;
 
 placar = 0; 
 
@@ -75,10 +91,18 @@ if(estado === JOGANDO){
     if (deserto.isTouching(internet)){
       estado = MORTE;  
     }
+    fim.visible = false;
+    recomeco.visible = false;
 } else if (estado === MORTE){
     areia.velocityX = 0;
     festa.setVelocityXEach (0);
     deserto.setVelocityXEach (0);
+    internet.changeAnimation ("scare");
+    festa.setLifetimeEach (-3.14);
+    deserto.setLifetimeEach (-3.14);
+    internet.velocityY = 0;
+    fim.visible = true;
+    recomeco.visible = true;
 
 
 
