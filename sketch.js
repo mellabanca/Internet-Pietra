@@ -42,24 +42,24 @@ naosouruim = loadSound ("checkPoint.mp3");
 
 function setup(){
 
-createCanvas(600,200)
+createCanvas(windowWidth,windowHeight);
 
-internet = createSprite(50, 160, 20, 50);
+internet = createSprite(50, height-70, 20, 50);
 internet.addAnimation("correndo", internetmovel);
 internet.addAnimation ("scare", medo);
 internet.scale = 0.5;
 
-areia = createSprite(200,180,400,20)
+areia = createSprite(width/2,height-80,width,125)
 areia.addImage("chão",areiamovedica);
 areia.x = areia.width/2;
 
-homeminvisivel = createSprite (200, 190, 400, 10);
+homeminvisivel = createSprite (width/2, height-10, width, 125);
 homeminvisivel.visible = false;
 
-fim = createSprite (300, 100);
+fim = createSprite (width/2, height/2-50);
 fim.addImage (tantantan);
 
-recomeco = createSprite (300, 140);
+recomeco = createSprite (width/2, height/2);
 recomeco.addImage (tantan);
 recomeco.scale = 0.5;
 
@@ -91,14 +91,15 @@ if(estado === JOGANDO){
     if(areia.x < 0){
         areia.x = areia.width/2;
     }
-    if(keyDown("space")&& internet.y > 150){
+    if(keyDown("space")&& internet.y > height-120 || touches.lenght > 0 && internet.y > height-120){
         internet.velocityY = -12;
         pulacorda.play();
+        touches = [];
     }
     internet.velocityY += 1;
     cloud();
     enemy();
-    placar += Math.round(frameCount/60); 
+    placar += Math.round(frameRate()/60); 
     if (placar%500 === 0 && placar > 0){
         naosouruim.play();
     }
@@ -118,26 +119,33 @@ if(estado === JOGANDO){
     internet.velocityY = 0;
     fim.visible = true;
     recomeco.visible = true;
-    
+    if(mousePressedOver(recomeco) || touches.lenght > 0 ){
+        tenteNovamente();
+        touches = [];
 }
 
-if(mousePressedOver(recomeco)){
-    tenteNovamente();
+
 }
 
 drawSprites();
-text ("Pontuação:"+ placar, 500, 50);
+text ("Pontuação:"+ placar, 25, height/2-200);
 }
 
 function tenteNovamente(){
+   estado = JOGANDO; 
+   festa.destroyEach();
+   deserto.destroyEach();
+   placar = 0;
+   internet.changeAnimation ("correndo");
+
     
 }
 
 function cloud(){
     if (frameCount % 60 === 0){
-        algodaodoce = createSprite (600, 100, 40, 10);
+        algodaodoce = createSprite (width+20, height-300, 40, 10);
         algodaodoce.addImage (algodaodocecolorido);
-        algodaodoce.y = Math.round(random(1, 100));
+        algodaodoce.y = Math.round(random(1, height/2));
         algodaodoce.velocityX = -3;
         algodaodoce.depth = internet.depth; 
         internet.depth += 1;
@@ -148,7 +156,7 @@ function cloud(){
 }
 function enemy(){
     if (frameCount % 60 === 0){
-        var cactus = createSprite (600, 165, 10, 40);
+        var cactus = createSprite (width, height-95, 10, 40);
         cactus.velocityX = -(6 + placar/100);
     var number = Math.round(random(1,6)); 
     switch (number){
